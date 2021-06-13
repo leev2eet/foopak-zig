@@ -1,12 +1,12 @@
 const std = @import("std");
 const string = @import("../../../src/string/string.zig");
 
-const ConstString = string.ConstString;
+const UnicodeString = string.UnicodeString;
 
 const expectEqual = std.testing.expectEqual;
 
 test "should correctly return characters for pure ascii string" {
-    var str = ConstString.init("Hello World!");
+    var str = UnicodeString.init("Hello World!");
 
     var char = str.charAt(4);
 
@@ -14,7 +14,7 @@ test "should correctly return characters for pure ascii string" {
 }
 
 test "should correctly return characters for strings containing unicode characters" {
-    var str = ConstString.init("Héllô Wórld‼");
+    var str = UnicodeString.init("Héllô Wórld‼");
 
     const char = str.charAt(11);
 
@@ -22,7 +22,7 @@ test "should correctly return characters for strings containing unicode characte
 }
 
 test "should correctly return cached character" {
-    var str = ConstString.init("Héllô Wórld‼");
+    var str = UnicodeString.init("Héllô Wórld‼");
 
     const char1 = str.charAt(11);
     const char2 = str.charAt(4);
