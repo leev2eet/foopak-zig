@@ -32,10 +32,8 @@ test_files=$(find \
 	-name '*.zig' \
 	-not -path '*/zig-cache/*' \
 	"${extra_find_filters[@]}" \
+	-printf '%p ' \
 );
-
-restore_ifs=$IFS;
-IFS=$'\n';
 
 exit_status=0;
 for test_file in $test_files; do
@@ -47,7 +45,5 @@ for test_file in $test_files; do
 		exit_status=1
 	fi
 done
-
-IFS=$restore_ifs;
 
 exit $exit_status;
