@@ -11,5 +11,5 @@ test "@LinkedList.create should correctly create new list" {
     defer linked_list.destroy();
 
     try expect(linked_list.head.next.item == null);
-    try expectEqual(@as(usize, 0), linked_list.length);
+    try expectEqual(@as(usize, 0), linked_list.len);
 }
