@@ -3,30 +3,30 @@ const string = @import("../../../src/string/string.zig");
 
 const UnicodeString = string.UnicodeString;
 
-const expectEqual = std.testing.expectEqual;
+const expectEqualStrings = std.testing.expectEqualStrings;
 
 test "should correctly return characters for pure ascii string" {
     var str = UnicodeString.init("Hello World!");
 
-    var char = str.charAt(4);
+    var char = str.getCharAt(4);
 
-    try expectEqual(@as(u21, 'o'), char);
+    try expectEqualStrings("o", char);
 }
 
 test "should correctly return characters for strings containing unicode characters" {
     var str = UnicodeString.init("Héllô Wórld‼");
 
-    const char = str.charAt(11);
+    const char = str.getCharAt(11);
 
-    try expectEqual(@as(u21, 0x203C), char);
+    try expectEqualStrings("‼", char);
 }
 
 test "should correctly return cached character" {
     var str = UnicodeString.init("Héllô Wórld‼");
 
-    const char1 = str.charAt(11);
-    const char2 = str.charAt(4);
+    const char1 = str.getCharAt(11);
+    const char2 = str.getCharAt(4);
 
-    try expectEqual(@as(u21, 0x203C), char1);
-    try expectEqual(@as(u21, 0xF4), char2);
+    try expectEqualStrings("‼", char1);
+    try expectEqualStrings("ô", char2);
 }
