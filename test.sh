@@ -20,7 +20,7 @@ EOF
 	exit 0;
 fi
 
-extra_find_filters=()
+extra_find_filters=();
 
 if [ -n "$filter_arg" ]; then
 	filter_path=${filter_arg//\./\/};
@@ -32,11 +32,10 @@ test_files=$(find \
 	-name '*.zig' \
 	-not -path '*/zig-cache/*' \
 	"${extra_find_filters[@]}" \
-	-printf '%p ' \
 );
 
 exit_status=0;
-for test_file in $test_files; do
+IFS=$'\n'; for test_file in $test_files; do
 	echo "Running ${test_file#$project_root\/tests\/}...";
 	zig test -lc --main-pkg-path "$project_root" "$test_file";
 	test_status=$?;
