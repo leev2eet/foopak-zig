@@ -3,13 +3,13 @@ const std = @import("std");
 const Utf8Iterator = std.unicode.Utf8Iterator;
 const Utf8View = std.unicode.Utf8View;
 
-pub const UnicodeString = struct {
+pub const StringBuilder = struct {
     cache: []?[]const u8,
     characterCount: usize,
     iterator: Utf8Iterator,
     view: Utf8View,
 
-    pub fn init(comptime buffer: []const u8) UnicodeString {
+    pub fn init(comptime buffer: []const u8) StringBuilder {
         var utf8View = Utf8View.initUnchecked(buffer);
         var cache = init: {
             var arr: [buffer.len]?[]const u8 = undefined;
@@ -19,7 +19,7 @@ pub const UnicodeString = struct {
             break :init arr;
         };
 
-        return UnicodeString{
+        return StringBuilder{
             .cache = &cache,
             .characterCount = 0,
             .iterator = utf8View.iterator(),
@@ -27,11 +27,11 @@ pub const UnicodeString = struct {
         };
     }
 
-    pub fn getBuffer(self: *UnicodeString) []const u8 {
+    pub fn getBuffer(self: *StringBuilder) []const u8 {
         return self.view.bytes;
     }
 
-    pub fn getCharAt(self: *UnicodeString, index: usize) []const u8 {
+    pub fn getCharAt(self: *StringBuilder, index: usize) []const u8 {
         while (self.characterCount <= index) {
             const character = self.iterator.nextCodepointSlice();
             self.cache[self.characterCount] = character;

@@ -1,1 +1,1 @@
-pub const UnicodeString = @import("./unicode_string.zig").UnicodeString;
+pub const StringBuilder = @import("./string_builder.zig").StringBuilder;

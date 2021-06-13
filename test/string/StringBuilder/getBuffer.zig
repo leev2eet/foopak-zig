@@ -1,20 +1,20 @@
 const std = @import("std");
 const string = @import("../../../src/string/string.zig");
 
-const UnicodeString = string.UnicodeString;
+const StringBuilder = string.StringBuilder;
 
 const expectEqualStrings = std.testing.expectEqualStrings;
 
-test "@UnicodeString.getBuffer should correctly return buffer" {
+test "@StringBuilder.getBuffer should correctly return buffer" {
     const buffer = "Hello World!";
-    var str = UnicodeString.init(buffer);
+    var str = StringBuilder.init(buffer);
 
     try expectEqualStrings(str.getBuffer(), buffer);
 }
 
-test "@UnicodeString.getBuffer should correctly return buffer containing unicode characters" {
+test "@StringBuilder.getBuffer should correctly return buffer containing unicode characters" {
     const buffer = "Héllô Wórld‼";
-    var str = UnicodeString.init(buffer);
+    var str = StringBuilder.init(buffer);
 
     try expectEqualStrings(str.getBuffer(), buffer);
 }
