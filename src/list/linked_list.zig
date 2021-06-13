@@ -36,11 +36,7 @@ pub fn LinkedList(comptime T: type) type {
             }
 
             pub fn next(self: *Self.Iterator) ?T {
-                if (self.current == null) {
-                    return null;
-                }
-
-                var item = &self.current.item;
+                var item = self.current.item;
                 self.current = self.current.next;
                 return item;
             }
