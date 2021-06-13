@@ -8,7 +8,8 @@ const expectEqual = std.testing.expectEqual;
 
 test "@LinkedList.create should correctly create new list" {
     var linked_list = LinkedList(i32).create(null);
+    defer linked_list.destroy();
 
-    try expect(linked_list.head == null);
+    try expect(linked_list.head.next.item == null);
     try expectEqual(@as(usize, 0), linked_list.length);
 }

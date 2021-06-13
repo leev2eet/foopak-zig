@@ -7,8 +7,25 @@ pub fn LinkedList(comptime T: type) type {
         const Self = @This();
 
         pub const Node = struct {
-            item: T,
-            next: ?*Self.Node,
+            item: ?T,
+            next: *Self.Node,
+
+            pub fn createEmpty(allocator: *Allocator) *Self.Node {
+                return allocator.create(Self.Node) catch unreachable;
+            }
+
+            pub fn create(allocator: *Allocator, item: ?T, next: *Self.Node) *Self.Node {
+                var node = Self.Node.createEmpty(allocator);
+
+                node.item = item;
+                node.next = next;
+
+                return node;
+            }
+
+            pub fn destroy(self: *Self.Node, allocator: *Allocator) void {
+                allocator.destroy(self);
+            }
         };
 
         pub const Iterator = struct {
@@ -36,33 +53,51 @@ pub fn LinkedList(comptime T: type) type {
         };
 
         allocator: *Allocator,
-        head: ?*Self.Node,
+        head: *Self.Node,
+        tail: *Self.Node,
         length: usize,
 
-        pub fn create(allocator: ?*Allocator) Self {
+        pub fn create(opt_allocator: ?*Allocator) Self {
+            var allocator = opt_allocator orelse std.heap.c_allocator;
+
+            var head = Self.Node.createEmpty(allocator);
+            var tail = Self.Node.createEmpty(allocator);
+
+            head.item = null;
+            tail.item = null;
+
+            head.next = tail;
+            tail.next = head;
+
             return Self{
-                .allocator = allocator orelse std.heap.c_allocator,
-                .head = null,
+                .allocator = allocator,
+                .head = head,
+                .tail = tail,
                 .length = 0,
             };
         }
 
         pub fn destroy(self: *Self) void {
-            var node = self.head;
+            var node = self.head.next;
+            self.head.destroy(self.allocator);
 
-            while (node != null) {
-                var next_node = node.?.next;
-                self.allocator.destroy(node.?);
+            while (node.item != null) {
+                var next_node = node.next;
+                node.destroy(self.allocator);
                 node = next_node;
             }
         }
 
         pub fn prepend(self: *Self, item: T) void {
-            var new_head = self.allocator.create(Self.Node) catch unreachable;
+            var first_node = self.head.next;
+            self.head.next = Self.Node.create(self.allocator, item, first_node);
+        }
 
-            new_head.item = item;
-            new_head.next = self.head;
-            self.head = new_head;
+        pub fn append(self: *Self, item: T) void {
+            self.tail.item = item;
+            var new_tail = Self.Node.create(self.allocator, null, self.head);
+            self.tail.next = new_tail;
+            self.tail = new_tail;
         }
     };
 }
