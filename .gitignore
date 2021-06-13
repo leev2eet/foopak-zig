@@ -1,6 +1,6 @@
 # local files
 /zig-out
-/zig-cache
+zig-cache
 
 # tmp files
 *~
