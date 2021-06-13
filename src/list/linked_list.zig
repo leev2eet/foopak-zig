@@ -29,7 +29,7 @@ pub fn LinkedList(comptime T: type) type {
         };
 
         pub const Iterator = struct {
-            current: ?*Self.Node,
+            current: *Self.Node,
 
             pub fn init(node: *Self.Node) Self.Iterator {
                 return Self.Iterator{ .current = node };
@@ -49,6 +49,10 @@ pub fn LinkedList(comptime T: type) type {
                 return Self.Iterator{
                     .current = self.current,
                 };
+            }
+
+            pub fn peek(self: *Self.Iterator) ?T {
+                return self.current.item;
             }
         };
 
@@ -89,8 +93,7 @@ pub fn LinkedList(comptime T: type) type {
         }
 
         pub fn prepend(self: *Self, item: T) void {
-            var first_node = self.head.next;
-            self.head.next = Self.Node.create(self.allocator, item, first_node);
+            self.head.next = Self.Node.create(self.allocator, item, self.head.next);
         }
 
         pub fn append(self: *Self, item: T) void {
@@ -98,6 +101,10 @@ pub fn LinkedList(comptime T: type) type {
             var new_tail = Self.Node.create(self.allocator, null, self.head);
             self.tail.next = new_tail;
             self.tail = new_tail;
+        }
+
+        pub fn begin(self: *Self) Self.Iterator {
+            return Self.Iterator.init(self.head.next);
         }
     };
 }
