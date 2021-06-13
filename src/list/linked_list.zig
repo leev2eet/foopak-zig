@@ -59,7 +59,7 @@ pub fn LinkedList(comptime T: type) type {
         allocator: *Allocator,
         head: *Self.Node,
         tail: *Self.Node,
-        length: usize,
+        len: usize,
 
         pub fn create(opt_allocator: ?*Allocator) Self {
             var allocator = opt_allocator orelse std.heap.c_allocator;
@@ -77,7 +77,7 @@ pub fn LinkedList(comptime T: type) type {
                 .allocator = allocator,
                 .head = head,
                 .tail = tail,
-                .length = 0,
+                .len = 0,
             };
         }
 
@@ -94,6 +94,7 @@ pub fn LinkedList(comptime T: type) type {
 
         pub fn prepend(self: *Self, item: T) void {
             self.head.next = Self.Node.create(self.allocator, item, self.head.next);
+            self.len += 1;
         }
 
         pub fn append(self: *Self, item: T) void {
@@ -101,6 +102,7 @@ pub fn LinkedList(comptime T: type) type {
             var new_tail = Self.Node.create(self.allocator, null, self.head);
             self.tail.next = new_tail;
             self.tail = new_tail;
+            self.len += 1;
         }
 
         pub fn begin(self: *Self) Self.Iterator {

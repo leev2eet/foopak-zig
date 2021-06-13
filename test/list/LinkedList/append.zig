@@ -12,6 +12,7 @@ test "@LinkedList.append should correctly append to empty list" {
     linked_list.append(69); // lmao
 
     try expectEqual(@as(i32, 69), linked_list.head.next.item.?);
+    try expectEqual(@as(usize, 1), linked_list.len);
 }
 
 test "@LinkedList.append should correctly append to non-empty list" {
@@ -23,4 +24,5 @@ test "@LinkedList.append should correctly append to non-empty list" {
 
     try expectEqual(@as(i32, 69), linked_list.head.next.item.?);
     try expectEqual(@as(i32, 420), linked_list.head.next.next.item.?);
+    try expectEqual(@as(usize, 2), linked_list.len);
 }
