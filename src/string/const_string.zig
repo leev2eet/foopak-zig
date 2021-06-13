@@ -31,7 +31,7 @@ pub const ConstString = struct {
         return self.view.bytes;
     }
 
-    pub fn charAt(self: *ConstString, index: usize) !u21 {
+    pub fn charAt(self: *ConstString, index: usize) u21 {
         while (self.characterCount <= index) {
             const character = self.iterator.nextCodepoint() orelse 0;
             self.cache[self.characterCount] = character;
