@@ -27,13 +27,27 @@ if [ -n "$filter_arg" ]; then
 	extra_find_filters+=('-path' "*/$filter_path*");
 fi
 
-find \
+test_files=$(find \
 	"${project_root:?}/tests" \
 	-name '*.zig' \
 	-not -path '*/zig-cache/*' \
 	"${extra_find_filters[@]}" \
-	|
-	while read -r test_file_path; do
-		echo "Running ${test_file_path#$project_root\/tests\/}...";
-		zig test -lc --main-pkg-path "$project_root" "$test_file_path";
-	done
+);
+
+restore_ifs=$IFS;
+IFS=$'\n';
+
+exit_status=0;
+for test_file in $test_files; do
+	echo "Running ${test_file#$project_root\/tests\/}...";
+	zig test -lc --main-pkg-path "$project_root" "$test_file";
+	test_status=$?;
+
+	if [ "$test_status" != "0" ]; then
+		exit_status=1
+	fi
+done
+
+IFS=$restore_ifs;
+
+exit $exit_status;
